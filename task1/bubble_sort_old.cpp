@@ -15,6 +15,12 @@ int main()
 
     for(int i=0;i<n;i++)
     {
+        cout<<v[i]<<" ";
+    }
+    cout<<endl;
+
+    for(int i=0;i<n;i++)
+    {
         for(int j=i;j<n;j++)
         {
             if(v[i]>v[j])
@@ -22,7 +28,6 @@ int main()
                 int temp=v[i];
                 v[i]=v[j];
                 v[j]=temp;
-                cout<<"v[i]:"<<v[i]<<endl;
             }
         }
     }
