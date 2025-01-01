@@ -1,0 +1,176 @@
+
+// Given N boxes and and each box contains different kind of fruits also each box contains arr[i] fruits. 
+//In one hour you can select any one type of fruit and eat at most X fruits of that particular type. 
+//You Have exactly H hours to finish all the fruits, the task is to find out the minimum value of X 
+//such that you can finish all the fruits in maximum H hours.
+
+//  H is always greater than or equal to N .
+
+#include <bits/stdc++.h>
+#define int long long int
+using namespace std;
+
+typedef vector<int> vi;
+typedef pair<int, int> pii;
+typedef set<int> si;
+typedef set<pii> spi;
+typedef stack<int> sti;
+typedef stack<pii> stp;
+typedef queue<int> qi;
+typedef priority_queue<int> pqi;
+typedef map<int, int> mii;
+typedef map<pii, int> mpi;
+
+void input(vi &v)
+{
+    for (auto &it : v)
+    {
+        cin >> it;
+    }
+}
+
+void print(vi v)
+{
+    for (auto it : v)
+    {
+        cout << it << " ";
+    }
+}
+
+vi make_prefix_sum(vi v)
+{
+    int n = v.size();
+    vi prefixSum(n + 1);
+    prefixSum[0] = 0;
+    prefixSum[1] = v[0];
+    for (int i = 2; i <= n; i++)
+    {
+        prefixSum[i] = prefixSum[i - 1] + v[i - 1];
+    }
+
+    return prefixSum;
+}
+
+void print_set(spi &s)
+{
+    for (auto it : s)
+    {
+        cout << it.first << " " << it.second << endl;
+    }
+}
+
+void print_setint(si &s)
+{
+    for (auto &it : s)
+    {
+        cout << it << " ";
+    }
+    cout << endl;
+}
+
+void input1(vi &v)
+{
+    for (auto &it : v)
+    {
+        cin >> it;
+    }
+}
+
+void printMap(map<pii, int> m)
+{
+    for (auto it : m)
+    {
+        cout << it.first.first << " " << it.first.second << " " << it.second << endl;
+    }
+}
+
+
+void print_2D_vector(vector<vi> v)
+{
+    int n = v.size();
+    for (int i = 0; i < n; i++)
+    {
+        for (auto it : v[i])
+        {
+            cout << it << " ";
+        }
+        cout << endl;
+    }
+}
+
+
+
+
+
+
+
+// starts here
+bool search(vi v, int mid, int time)
+{
+    int n = v.size();
+    for (int i = 0; i < n; i++)
+    {
+        if(time==0)
+        break;
+
+        if (v[i] <= mid)
+        {
+            v[i] = 0;
+            time -= 1;
+        }
+        else
+        {
+            v[i] -= mid;
+            time -= 1;
+            i-=1;
+        }
+    }
+
+    for(int i=0;i<n;i++)
+    {
+        if(v[i]!=0)
+        return false;
+    }
+    return true;
+}
+
+
+
+int min_x(vi v, int time)
+{
+    int n = v.size();
+
+    sort(v.begin(), v.end());
+    int st = 0;
+    int end = v[n-1];
+    int ans=-1;
+    while (st <= end)
+    {
+        int mid = st + (end - st) / 2;
+        if(search(v,mid,time))
+        {
+            end=mid-1;
+            ans=mid;
+        }
+        else 
+        {
+            st=mid+1;
+        }
+    }
+
+    return ans;
+}
+
+
+
+signed main()
+{
+    int n;
+    cin >> n;
+    vi v(n);
+    input(v);
+    int time;
+    cin >> time;
+
+    cout<<min_x(v,time);
+}
