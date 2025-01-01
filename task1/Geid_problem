@@ -1,0 +1,147 @@
+#include <bits/stdc++.h>
+using namespace std;
+vector<vector<int>> dp;
+const int N = 1e9 + 7;
+// minimum cost to reach the destination
+int fun(vector<vector<int>> grid, int i, int j)
+{
+    if (dp[i][j] != -1)
+        return dp[i][j];
+    if (i == 0 && j == 0)
+        return grid[i][j];
+    if (i > 0 && j > 0)
+    {
+        return dp[i][j] = grid[i][j] + min(fun(grid, i - 1, j), fun(grid, i, j - 1));
+    }
+    else if (i == 0 && j != 0)
+    {
+        return dp[i][j] = grid[i][j] + fun(grid, i, j - 1);
+    }
+    else if (j == 0 && i != 0)
+    {
+        return dp[i][j] = grid[i][j] + fun(grid, i - 1, j);
+    }
+}
+
+// number of ways to reach the destination
+// top down approach
+int fun1(vector<vector<char>> grid, int i, int j)
+{
+    if (dp[i][j] != -1)
+        return dp[i][j];
+    if (i == 0 && j == 0)
+        return 1;
+    if (grid[i][j] == '#')
+        return 0;
+    if (i > 0 && j > 0)
+    {
+        return dp[i][j] = (fun1(grid, i - 1, j) + fun1(grid, i, j - 1)) % N;
+    }
+    else if (i == 0 && j != 0)
+    {
+        return dp[i][j] = (fun1(grid, i, j - 1)) % N;
+    }
+    else if (i != 0 && j == 0)
+    {
+        return dp[i][j] = fun1(grid, i - 1, j) % N;
+    }
+}
+
+void print(vector<vector<int>> f)
+{
+    for (int i = 0; i < f.size(); i++)
+    {
+        for (int j = 0; j < f[0].size(); j++)
+        {
+            cout << f[i][j] << " ";
+        }
+        cout << endl;
+    }
+}
+
+// bottom up approach
+int fun2(vector<vector<char>> grid, int n, int m)
+{
+    vector<vector<int>> f(n, vector<int>(m));
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < m; j++)
+        {
+            if (grid[i][j] == '#')
+                f[i][j] = -1;
+            else if (i == 0 || j == 0)
+                f[i][j] = 1;
+        }
+    }
+
+    for(int i=0;i<m;i++)
+    {
+        if(f[0][i]==-1)
+        {
+            for(int j=i+1;j<m;j++)
+            f[0][j]=-1;
+            break;
+        }
+    }
+
+    for(int i=0;i<n;i++)
+    {
+        if(f[i][0]==-1)
+        {
+            for(int j=i+1;j<n;j++)
+            f[j][0]=-1;
+            break;
+        }
+    }
+
+
+
+    // print(f);
+
+    for (int i = 1; i < n; i++)
+    {
+        for (int j = 1; j < m; j++)
+        {
+            if (f[i][j] != -1)
+            {
+                if(f[i - 1][j] == -1 && f[i][j - 1] == -1)
+                f[i][j]=0;
+                else if (f[i - 1][j] == -1 || f[i][j - 1] == -1)
+                    f[i][j] = max(f[i - 1][j], f[i][j - 1])%N;
+                else
+                    f[i][j] = (f[i - 1][j] + f[i][j - 1])%N;
+            }
+        }
+    }
+
+    return f[n-1][m-1];
+}
+
+
+int main()
+{
+
+    int n, m;
+    cin >> n >> m;
+    // for (int i = 0; i < n; i++)
+    // {
+    //     vector<int> temp;
+    //     for (int j = 0; j < m; j++)
+    //     {
+
+    //         temp.push_back(-1);
+    //     }
+    //     dp.push_back(temp);
+    // }
+
+    vector<vector<char>> grid(n, vector<char>(m));
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < m; j++)
+        {
+            cin >> grid[i][j];
+        }
+    }
+
+    cout << fun2(grid, n, m);
+}
