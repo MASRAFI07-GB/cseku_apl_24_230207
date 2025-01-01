@@ -1,0 +1,282 @@
+#include <bits/stdc++.h>
+using namespace std;
+// 2x1+x2+x3=5
+// 3x1+5x2+2x3=15
+// 2x1+x2+4x3=8
+
+// space deletion
+string space_deletion(string s)
+{
+    int size = s.size();
+    for (int i = 0; i < size; ++i)
+    {
+        if (s[i] == ' ')
+        {
+            for (int j = i; j < size; ++j)
+            {
+                if (s[j] != ' ')
+                {
+                    s.erase(s.begin() + i, s.begin() + j);
+                    size = s.size();
+                    break;
+                }
+            }
+        }
+    }
+    return s;
+}
+
+float find_float(string s)
+{
+    regex float_regex("([0-9]*[.])?[0-9]+");
+    float num;
+    smatch match;
+    if (regex_search(s, match, float_regex))
+    {
+        num = std::stof(match.str());
+        return num;
+        // cout << num << endl;
+    }
+}
+
+float find_coeffecient(string s, int f)
+{
+    if (f == 0)
+    {
+        if (((s[0] >= 97 && s[0] <= 122) || (s[0] >= 65 && s[0] <= 90)) || (s[0] == 45 && ((s[1] >= 97 && s[1] <= 122) || (s[1] >= 65 && s[1] <= 90))))
+        {
+            return 1;
+        }
+        else
+        {
+            return find_float(s);
+        }
+    }
+    else
+    {
+        int cnt = 0;
+        int size = s.size();
+        string s1;
+        for (int i = 0; i < size; i++)
+        {
+            if (s[i] == 43 || s[i] == 45)
+            {
+                cnt++;
+                if (cnt == f)
+                {
+                    if ((s[i + 1] >= 97 && s[i + 1] <= 122) || (s[i + 1] >= 65 && s[i + 1] <= 90))
+                    {
+                        return 1.0;
+                    }
+                    for (int j = i + 1; j < size; j++)
+                    {
+                        s1.push_back(s[j]);
+                    }
+                    break;
+                }
+            }
+            else if (s[i] == 61)
+            {
+
+                for (int j = i + 1; j < size; j++)
+                {
+                    s1.push_back(s[j]);
+                }
+                break;
+            }
+        }
+        // cout<<"s1="<<s1<<endl;
+        float c = find_float(s1);
+        // cout<<"c="<<c;
+        return c;
+    }
+}
+
+void print_cof(float a1, float b1, float c1, float d1, float a2, float b2, float c2, float d2, float a3, float b3, float c3, float d3)
+{
+    cout << a1 << " " << b1 << " " << c1 << " " << d1 << endl;
+    cout << a2 << " " << b2 << " " << c2 << " " << d2 << endl;
+    cout << a3 << " " << b3 << " " << c3 << " " << d3 << endl;
+}
+
+float find_root(float d1, float b1, float c1, float a1, float x22, float x33)
+{
+    // int x11=x1,x22=x2,x33=x3;
+    // cout<<d1<<" "<<x22<<" "<<x33<<" "<<a1<<endl;
+    float x1 = (float)(d1 - (float)b1 * x22 - (float)c1 * x33) / a1;
+    return x1;
+}
+
+float isMinas(string s, float a)
+{
+    if (s[0] == 45)
+        a *= (-1);
+    return a;
+}
+
+void isMinaso(string s, float &b, float &c, float &d)
+{
+    int cnt = 0;
+    int size = s.size();
+    if (s[0] != 45)
+    {
+        int c1 = 1, c2 = 2;
+        for (int i = 0; i < size; i++)
+        {
+            if (s[i] == 43 || s[i] == 45)
+            {
+                cnt++;
+                if (cnt == c1)
+                {
+                    if (s[i] == 45)
+                    {
+                        b *= (-1);
+                    }
+                }
+                else if (cnt == c2)
+                {
+                    if (s[i] == 45)
+                    {
+                        c *= (-1);
+                    }
+                }
+            }
+            else if (s[i] == 61)
+            {
+                if (s[i + 1] == 45)
+                {
+                    d *= (-1);
+                    break;
+                }
+            }
+        }
+    }
+    else
+    {
+        int c1 = 2, c2 = 3;
+        for (int i = 0; i < size; i++)
+        {
+            if (s[i] == 43 || s[i] == 45)
+            {
+                cnt++;
+                if (cnt == c1)
+                {
+                    if (s[i] == 45)
+                    {
+                        b *= (-1);
+                    }
+                }
+                else if (cnt == c2)
+                {
+                    if (s[i] == 45)
+                    {
+                        c *= (-1);
+                    }
+                }
+            }
+            else if (s[i] == 61)
+            {
+                if (s[i + 1] == 45)
+                {
+                    d *= (-1);
+                    break;
+                }
+            }
+        }
+    }
+
+    return;
+}
+
+int main()
+{
+    string s1, s2, s3;
+    getline(cin, s1);
+    getline(cin, s2);
+    getline(cin, s3);
+
+    float a1, a2, a3, b1, b2, b3, c1, c2, c3, d1, d2, d3;
+    int size1 = s1.size();
+
+    // space deletion
+    s1 = space_deletion(s1);
+    s2 = space_deletion(s2);
+    s3 = space_deletion(s3);
+
+    a1 = find_coeffecient(s1, 0);
+    a2 = find_coeffecient(s2, 0);
+    a3 = find_coeffecient(s3, 0);
+    if (s1[0] == 45)
+    {
+        b1 = find_coeffecient(s1, 2);
+        c1 = find_coeffecient(s1, 3);
+        d1 = find_coeffecient(s1, 4);
+    }
+    else
+    {
+        b1 = find_coeffecient(s1, 1);
+        c1 = find_coeffecient(s1, 2);
+        d1 = find_coeffecient(s1, 3);
+    }
+
+    if (s2[0] == 45)
+    {
+        b2 = find_coeffecient(s2, 2);
+        c2 = find_coeffecient(s2, 3);
+        d2 = find_coeffecient(s2, 4);
+    }
+    else
+    {
+        b2 = find_coeffecient(s2, 1);
+        c2 = find_coeffecient(s2, 2);
+        d2 = find_coeffecient(s2, 3);
+    }
+
+    if (s3[0] == 45)
+    {
+        b3 = find_coeffecient(s3, 2);
+        c3 = find_coeffecient(s3, 3);
+        d3 = find_coeffecient(s3, 4);
+    }
+    else
+    {
+        b3 = find_coeffecient(s3, 1);
+        c3 = find_coeffecient(s3, 2);
+        d3 = find_coeffecient(s3, 3);
+    }
+
+    a1 = isMinas(s1, a1);
+    a2 = isMinas(s2, a2);
+    a3 = isMinas(s3, a3);
+    isMinaso(s1, b1, c1, d1);
+    isMinaso(s2, b2, c2, d2);
+    isMinaso(s3, b3, c3, d3);
+
+    // print_cof(a1, b1, c1, d1, a2, b2, c2, d2, a3, b3, c3, d3);
+
+    float x1 = 0, x2 = 0, x3 = 0, temp1, temp2, temp3, v1 = 0, v2 = 0, v3 = 0;
+    int num_iter = 50;
+    int nit = 0;
+    while (num_iter--)
+    {
+        // temp1=x1,temp2=x2,temp3=x3;
+        x1 = find_root(d1, b1, c1, a1, x2, x3);
+        x2 = find_root(d2, a2, c2, b2, x1, x3);
+        x3 = find_root(d3, a3, b3, c3, x1, x2);
+        nit++;
+        cout << "iteration:" << nit << ": x1=  " << x1 << "   x2=  " << x2 << "   x3=  " << x3 << endl;
+        if (abs(v1 - x1) <= .000005 && abs(v2 - x2) <= .00005 && abs(v3 - x3) <= .00005)
+        {
+            break;
+        }
+        v1 = x1, v2 = x2, v3 = x3;
+    }
+}
+
+// 2x1+4x2-6x3=-8
+// x1+3x2+x3=10
+// 2x1-4x2-2x3=-12
+
+// 2x1+x2+x3=5
+// 3x1+5x2+2x3=15
+// 2x1+x2+4x3=8
