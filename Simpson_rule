@@ -1,0 +1,53 @@
+#include <iostream>
+#include <cmath>
+using namespace std;
+
+double f(double x)
+{
+    return 1 / (1 + x);
+}
+
+int main()
+{
+    double lower, upper, stepSize, integration = 0.0;
+
+    cout << "Enter lower limit of integration: ";
+    cin >> lower;
+    cout << "Enter upper limit of integration: ";
+    cin >> upper;
+    cout << "Enter the difference: ";
+
+    float h;
+    cin >> h;
+
+    integration += (f(lower) + f(upper));
+    int j = 1;
+    int i = 0;
+    int step = (upper - lower) / h + 1;
+    step -= 2;
+    float l1 = lower;
+    float x = l1 + h, y;
+    cout << " x=" << lower << " " << "y=" << f(lower) << endl;
+    while (step--)
+    {
+        float y = f(x);
+        cout << " x=" << x << " " << "y=" << y << endl;
+        if (j % 2 == 0)
+        {
+            y *= 2;
+        }
+        else
+            y *= 4;
+
+        integration += y;
+        x += h;
+        j += 1;
+    }
+
+    //cout << ++i << "th x=" << upper << " " << "y=" << f(upper) << endl;
+
+    integration *= (( h) / 3);
+    cout << integration << endl;
+
+    return 0;
+}
