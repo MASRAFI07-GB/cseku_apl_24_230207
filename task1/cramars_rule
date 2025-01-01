@@ -1,0 +1,230 @@
+#include <bits/stdc++.h>
+using namespace std;
+string space_deletion(string s)
+{
+    int size = s.size();
+    for (int i = 0; i < size; ++i)
+    {
+        if (s[i] == ' ')
+        {
+            for (int j = i; j < size; ++j)
+            {
+                if (s[j] != ' ')
+                {
+                    s.erase(s.begin() + i, s.begin() + j);
+                    size = s.size();
+                    break;
+                }
+            }
+        }
+    }
+    return s;
+}
+
+float find_float(string s)
+{
+    regex float_regex("([0-9]*[.])?[0-9]+");
+    float num;
+    smatch match;
+    if (regex_search(s, match, float_regex))
+    {
+        num = std::stof(match.str());
+        return num;
+        // cout << num << endl;
+    }
+}
+
+float find_coeffecient(string s, int f)
+{
+    if (f == 0)
+    {
+        if (((s[0] >= 97 && s[0] <= 122) || (s[0] >= 65 && s[0] <= 90)) || (s[0] == 45 && ((s[1] >= 97 && s[1] <= 122) || (s[1] >= 65 && s[1] <= 90))))
+        {
+            return 1;
+        }
+        else
+        {
+            return find_float(s);
+        }
+    }
+    else
+    {
+        int cnt = 0;
+        int size = s.size();
+        string s1;
+        for (int i = 0; i < size; i++)
+        {
+            if (s[i] == 43 || s[i] == 45)
+            {
+                cnt++;
+                if (cnt == f)
+                {
+                    if ((s[i + 1] >= 97 && s[i + 1] <= 122) || (s[i + 1] >= 65 && s[i + 1] <= 90))
+                    {
+                        return 1.0;
+                    }
+                    for (int j = i + 1; j < size; j++)
+                    {
+                        s1.push_back(s[j]);
+                    }
+                    break;
+                }
+            }
+            else if (s[i] == 61)
+            {
+
+                for (int j = i + 1; j < size; j++)
+                {
+                    s1.push_back(s[j]);
+                }
+                break;
+            }
+        }
+        // cout<<"s1="<<s1<<endl;
+        float c = find_float(s1);
+        // cout<<"c="<<c;
+        return c;
+    }
+}
+
+void print_cof(float a1, float b1, float c1, float d1, float a2, float b2, float c2, float d2, float a3, float b3, float c3, float d3)
+{
+    cout << a1 << " " << b1 << " " << c1 << " " << d1 << endl;
+    cout << a2 << " " << b2 << " " << c2 << " " << d2 << endl;
+    cout << a3 << " " << b3 << " " << c3 << " " << d3 << endl;
+}
+
+void print(vector<vector<float>> &v)
+{
+    for (int i = 0; i < v.size(); i++)
+    {
+        for (int j = 0; j < v[0].size(); j++)
+            cout << v[i][j] << " ";
+        cout << endl;
+    }
+}
+
+float determinant(vector<vector<float>>v)
+{
+    float sum=v[0][0]*(v[1][1]*v[2][2]-v[1][2]*v[2][1])-v[0][1]*(v[1][0]*v[2][2]-v[1][2]*v[2][0])+v[0][2]*(v[1][0]*v[2][1]-v[1][1]*v[2][0]);
+    return sum;
+}
+
+int main()
+{
+
+    string s1, s2, s3;
+    getline(cin, s1);
+    getline(cin, s2);
+    getline(cin, s3);
+
+    float a1, a2, a3, b1, b2, b3, c1, c2, c3, d1, d2, d3;
+    int size1 = s1.size();
+
+    // space deletion
+    s1 = space_deletion(s1);
+    s2 = space_deletion(s2);
+    s3 = space_deletion(s3);
+
+    a1 = find_coeffecient(s1, 0);
+    a2 = find_coeffecient(s2, 0);
+    a3 = find_coeffecient(s3, 0);
+    if (s1[0] == 45)
+    {
+        b1 = find_coeffecient(s1, 2);
+        c1 = find_coeffecient(s1, 3);
+        d1 = find_coeffecient(s1, 4);
+    }
+    else
+    {
+        b1 = find_coeffecient(s1, 1);
+        c1 = find_coeffecient(s1, 2);
+        d1 = find_coeffecient(s1, 3);
+    }
+
+    if (s2[0] == 45)
+    {
+        b2 = find_coeffecient(s2, 2);
+        c2 = find_coeffecient(s2, 3);
+        d2 = find_coeffecient(s2, 4);
+    }
+    else
+    {
+        b2 = find_coeffecient(s2, 1);
+        c2 = find_coeffecient(s2, 2);
+        d2 = find_coeffecient(s2, 3);
+    }
+
+    if (s3[0] == 45)
+    {
+        b3 = find_coeffecient(s3, 2);
+        c3 = find_coeffecient(s3, 3);
+        d3 = find_coeffecient(s3, 4);
+    }
+    else
+    {
+        b3 = find_coeffecient(s3, 1);
+        c3 = find_coeffecient(s3, 2);
+        d3 = find_coeffecient(s3, 3);
+    }
+
+    // print_cof(a1, b1, c1, d1, a2, b2, c2, d2, a3, b3, c3, d3);
+
+    vector<vector<float>> D(3, vector<float>(3)), D1(3, vector<float>(3)), D2(3, vector<float>(3)), D3(3, vector<float>(3));
+    D[0][0] = a1;
+    D[0][1] = b1;
+    D[0][2] = c1;
+
+    D[1][0] = a2;
+    D[1][1] = b2;
+    D[1][2] = c2;
+
+    D[2][0] = a3;
+    D[2][1] = b3;
+    D[2][2] = c3;
+
+    // print(D);
+    D1 = D;
+    D1[0][0] = d1;
+    D1[1][0] = d2;
+    D1[2][0] = d3;
+  //   print(D1);
+
+    D2 = D;
+    D2[0][1] = d1;
+    D2[1][1] = d2;
+    D2[2][1] = d3;
+
+   // print(D2);
+
+    D3 = D;
+    D3[0][2] = d1;
+    D3[1][2] = d2;
+    D3[2][2] = d3;
+
+   // print(D3);
+
+    float det_of_D=determinant(D);
+    //cout<<det_of_D<<endl;
+    float det_of_D1=determinant(D1);
+   // cout<<det_of_D1<<endl;
+    float det_of_D2=determinant(D2);
+    //cout<<det_of_D2<<endl;
+    float det_of_D3=determinant(D3);
+    //cout<<det_of_D3<<endl;
+
+    float p1=det_of_D1/(float)det_of_D;
+    float p2=det_of_D2/(float)det_of_D;
+    float p3=det_of_D3/(float)det_of_D;
+
+    cout<<"a1="<<p1<<" "<<"a2="<<p2<<" "<<"a3="<<p3<<endl;
+    
+
+   
+}
+
+
+
+// 4a1+10a2+30a3=62
+// 10a1+30a2+100a3=190    
+// 30a1+100a2+354a3=644
