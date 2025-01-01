@@ -1,0 +1,411 @@
+#include <bits/stdc++.h>
+using namespace std;
+float find_value(vector<char> v)
+{
+   float val = 0;
+   int x = 1;
+   for (int k = v.size() - 1; k >= 0; k--)
+   {
+      val += (x * (v[k] - 48));
+      x *= 10;
+   }
+   return val;
+}
+
+// evaluateing only one term
+float fun(string s1, float x, float y)
+{
+
+   int n2 = s1.size();
+   string s;
+   int n1 = 0;
+   if (s1[0] != '+' && s1[0] != '-')
+   {
+      s = s1;
+      n1 = n2;
+   }
+   else
+   {
+      n1 = 0;
+      for (int z = 1; z < n2; z++)
+      {
+         if (s1[z] == '=')
+            break;
+         s.push_back(s1[z]);
+         n1 += 1;
+      }
+      // n1 -= 1;
+   }
+
+   float sum = 0;
+
+   int index = 0;
+   float coef_val = 0;
+   if (s[0] >= 48 && s[0] <= 57)
+   {
+
+      vector<char> v;
+      int j = 0;
+      for (j = 0; j < n1; j++)
+      {
+         if (s[j] >= 48 && s[j] <= 57)
+         {
+            v.push_back(s[j]);
+         }
+         else
+            break;
+      }
+      index = j;
+      coef_val = find_value(v);
+   }
+   else
+      coef_val = 1;
+
+   // the first char is x
+   if (index < n1)
+   {
+      if (s[index] == 'x')
+      {
+         float sumx = 0;
+         int indy = index + 1;
+         if (index + 1 < n1 && s[index + 1] == '^')
+         {
+            vector<char> v1;
+
+            int l = 0;
+            for (l = index + 2; l < n1; l++)
+            {
+               if (s[l] >= 48 && s[l] <= 57)
+               {
+                  v1.push_back(s[l]);
+               }
+               else
+                  break;
+            }
+
+            float val1 = find_value(v1);
+            // done value of x
+            float sum1 = pow(x, val1);
+            sumx = sum1;
+            indy = l;
+         }
+         else
+         {
+            sumx = x;
+         }
+
+         if (indy < n1)
+         {
+            float sumy = 0;
+            if (indy + 1 < n1 && s[indy + 1] == '^')
+            {
+               vector<char> v1;
+
+               int l = 0;
+               for (l = indy + 2; l < n1; l++)
+               {
+                  if (s[l] >= 48 && s[l] <= 57)
+                  {
+                     v1.push_back(s[l]);
+                  }
+                  else
+                     break;
+               }
+
+               float val1 = find_value(v1);
+               float sum2 = pow(y, val1);
+               sumy = sum2;
+            }
+            else
+               sumy = y;
+
+            sum = coef_val * sumx * sumy;
+         }
+         else
+         {
+            sum = coef_val * sumx;
+         }
+
+         // cout<<"sumy="<<sumy<<endl;
+
+         // sum = coef_val * sumx * sumy;
+         // cout<<"sum when x="<<sum<<endl;
+      }
+
+      // the first char is y
+      else if (s[index] == 'y')
+      {
+         float sumy = 0;
+         int indx = index + 1;
+         if (index + 1 < n1 && s[index + 1] == '^')
+         {
+            vector<char> v1;
+
+            int l = 0;
+            for (l = index + 2; l < n1; l++)
+            {
+               if (s[l] >= 48 && s[l] <= 57)
+               {
+                  v1.push_back(s[l]);
+               }
+               else
+                  break;
+            }
+
+            float val1 = find_value(v1);
+            // done value of y
+            float sum1 = pow(y, val1);
+            sumy = sum1;
+            indx = l;
+         }
+         else
+         {
+            sumy = y;
+         }
+
+         if (indx < n1)
+         {
+            float sumx = 0;
+            if (indx + 1 < n1 && s[indx + 1] == '^')
+            {
+               vector<char> v1;
+               int l = 0;
+               for (l = indx + 2; l < n1; l++)
+               {
+                  if (s[l] >= 48 && s[l] <= 57)
+                  {
+                     v1.push_back(s[l]);
+                  }
+                  else
+                     break;
+               }
+
+               float val1 = find_value(v1);
+               float sum2 = pow(x, val1);
+               sumx = sum2;
+            }
+            else
+               sumx = x;
+
+            sum = coef_val * sumx * sumy;
+         }
+         else
+         {
+            sum = coef_val * sumy;
+         }
+      }
+      if (s1[0] == '-')
+      {
+         sum *= (-1);
+      }
+   }
+   else
+   {
+      sum = coef_val;
+      if (s1[0] == '-')
+         sum *= (-1);
+   }
+
+   return sum;
+}
+
+// making sum term by term then marging them and returning
+float fun_value(string s, float ini_x, float ini_y)
+{
+   int n = s.size();
+   int cnt = 0;
+   float sum = 0;
+   for (int i = 0; i < n; i += cnt)
+   {
+      cnt = 0;
+      string s1;
+      for (int j = i; j < n; j++)
+      {
+         if (i != j && (s[j] == '+' || s[j] == '-'))
+            break;
+         s1.push_back(s[j]);
+         cnt++;
+      }
+
+      float val = fun(s1, ini_x, ini_y);
+
+      sum += val;
+   }
+   return sum;
+}
+
+int main()
+{
+
+   string s;
+   cin >> s;
+   string s1;
+   int l = s.size();
+   int ind = 0;
+   for (int i = 0; i < l; i++)
+   {
+      if (s[i] == '=')
+      {
+         ind = i;
+         break;
+      }
+      s1.push_back(s[i]);
+   }
+
+   cout << "x1 and x2:" << endl;
+
+   float x1, x2;
+   cin >> x1 >> x2;
+   float x3;
+
+   int num_of_iteration = 50;
+   float error = .0000005;
+
+   int flag = 0;
+   float prev_r, pres_r;
+   int i = 1;
+   while (num_of_iteration--)
+   {
+      float f1, f2, f0;
+      f1 = fun_value(s1, x1, 0);
+      f2 = fun_value(s1, x2, 0);
+
+      //   float v1 = (float)f1 * (x2 - x1);
+      //   float v2 = f2 - f1;
+      // x0 = x1 - ((float)v1 / v2);
+
+      float v1 = (float)f2 * (x2 - x1);
+      float v2 = f2 - f1;
+      x3 = x2 - ((float)v1 / v2);
+
+      
+
+      if (flag == 0)
+      {
+         pres_r = x3;
+         flag = 1;
+      }
+      else
+      {
+         prev_r = pres_r;
+         pres_r = x3;
+         if (abs(prev_r - pres_r) <= error)
+            break;
+      }
+
+      //   cout << "x1=" << x1 << " " << "x2=" << x2 << " " << "x0=" << x0 << endl;
+      cout << i << "th iteration:   " << "x1 = " << x1 << "    " << "x2 = " << x2 << "    " << "x3 = " << x3 << endl;
+      x1=x2;
+      x2=x3;
+
+      // f0 = fun_value(s1, x3, 0);
+
+      // if ((float)f1 * f0 < 0)
+      // {
+      //    x2 = x0;
+      // }
+      // else if ((float)f2 * f0 < 0)
+      // {
+      //    x1 = x0;
+      // }
+      i++;
+   }
+
+   cout << "the root is:" << x3 << endl;
+}
+
+// x^2-4x-10=0
+//  -3x^3y^2+10x-11y^2+12xy-20=100
+
+// x^2-x-2=0
+
+// #include <bits/stdc++.h>
+// #define int long long int
+// using namespace std;
+
+// void print(vector<int> v)
+// {
+//    int n = v.size();
+//    for (int i = 0; i < n; i++)
+//       cout << v[i] << " ";
+//    cout << endl;
+// }
+// signed main()
+// {
+//    int t, n;
+//    cin >> t;
+//    while (t--)
+//    {
+//       cin >> n;
+//       vector<int> v(n);
+//       for (auto &it : v)
+//          cin >> it;
+//       sort(v.begin(), v.end());
+//       vector<int> v1, v2;
+//       int flag = 0;
+//       map<int, int> m;
+//       for (int i = 0; i < n - 1; i += 1)
+//       {
+//          if (v1.size() >= 4 && flag == 1)
+//             break;
+//          if (v[i] == v[i + 1])
+//          {
+//             if (v[i] != 0)
+//             {
+//                flag = 1;
+//             }
+//             v1.push_back(v[i]);
+//             v1.push_back(v[i + 1]);
+//             m[i] += 1;
+//             m[i + 1] += 1;
+//             i += 1;
+//          }
+//       }
+
+//       for (int i = n - 1; i > 0; i -= 1)
+//       {
+//          if (v2.size() >= 4)
+//             break;
+//          if (v[i] == v[i - 1] && m[i] == 0 && m[i - 1] == 0)
+//          {
+//             v2.push_back(v[i]);
+//             v2.push_back(v[i - 1]);
+//             i -= 1;
+//          }
+//       }
+
+//       // print(v1);
+//       // print(v2);
+//       int s1 = v1.size();
+
+//       if (v2.size() < 4)
+//       {
+//          for (int i = s1 - 1; i >= 0; i--)
+//          {
+//             v2.push_back(v1[i]);
+//             v1.pop_back();
+//             if (v2.size() == 4)
+//                break;
+//          }
+//          sort(v2.begin(), v2.end());
+//       }
+
+//       if (v1.size() >= 4 && v2.size() >= 4)
+//       {
+//          sort(v2.begin(), v2.end());
+//          int s1 = v1.size();
+//          if (v1.size() > 4)
+//          {
+//             v1.erase(v1.begin() + 4, v1.end());
+//          }
+
+//          cout << "YES" << endl;
+//          cout << v1[0] << " " << v2[v2.size() - 1] << " " << v1[1] << " " << v1[2] << " " << v2[0] << " " << v1[v1.size() - 1] << " " << v2[1] << " " << v2[2] << endl;
+//       }
+//       else
+//          cout << "NO" << endl;
+//    }
+// }
+
+// // 15
+// // 3 3 15 15 1 1 61 61 0 0 0 0 61 61 62 63
