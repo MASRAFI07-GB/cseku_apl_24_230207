@@ -1,0 +1,282 @@
+
+#include <bits/stdc++.h>
+using namespace std;
+struct node
+{
+   int data;
+   struct node *next, *prev;
+};
+
+void print_list(struct node *&head)
+{
+   struct node *current = head;
+   while (current != NULL)
+   {
+      cout << current->data << " ";
+      current = current->next;
+   }
+   cout << endl;
+}
+
+void addlast(int element, struct node *&tail, int &size)
+{
+
+   struct node *current = (struct node *)malloc(sizeof(struct node));
+   current->data = element;
+   tail->next = current;
+   tail = current;
+   tail->next = NULL;
+   size++;
+}
+
+void addfirst(int element, struct node *&head, struct node *&tail, int &size)
+{
+   head->data = element;
+   size++;
+
+   tail = head;
+   tail->next = NULL;
+}
+
+// You are given the head of a linked list. Remove every node which has a node with a greater value
+// anywhere to the right side of it.
+void remove_node(struct node *&head, struct node *&tail)
+{
+
+   struct node *current, *temp, *current1 = head;
+   bool honesty = false;
+
+   while (current1 != NULL)
+   {
+
+      int cd = current1->data;
+      current = current1;
+
+      if (honesty == false)
+      {
+         int flag = 0;
+         while (current != NULL)
+         {
+
+            if (current->data > cd)
+            {
+
+               flag = 1;
+               break;
+            }
+            current = current->next;
+         }
+         if (flag == 1)
+         {
+            head = head->next;
+            current1 = head;
+         }
+         else
+         {
+            honesty = true;
+            current1 = current1->next;
+            temp = head;
+         }
+      }
+      else
+      {
+         int flag = 0;
+         while (current != NULL)
+         {
+            if (current->data > cd)
+            {
+               flag = 1;
+               break;
+            }
+
+            current = current->next;
+         }
+
+         if (flag == 1)
+         {
+            temp->next = current1->next;
+            current1 = temp->next;
+         }
+         else
+         {
+            temp = temp->next;
+            current1 = temp->next;
+         }
+      }
+   }
+}
+
+// Given the head of a sorted singly linked list, delete all duplicates such that each element appears
+// only once.
+void delete_dup(struct node *&head, struct node *&tail)
+{
+   struct node *current = head, *current1 = current->next;
+   while (current1 != NULL)
+   {
+      if (current->data == current1->data)
+      {
+         struct node *temp = current->next;
+         while (1)
+         {
+            temp = temp->next;
+            if (temp == NULL)
+               break;
+            if (current->data != temp->data)
+               break;
+         }
+         if (temp == NULL)
+         {
+            current->next = NULL;
+            break;
+         }
+         else
+            current->next = temp;
+      }
+      current = current->next;
+      current1 = current->next;
+   }
+}
+
+
+// merge the two sorted list in one another new list
+void merge_lists(struct node *&head1, struct node *&head2, struct node *&tail2)
+{
+   struct node *current1 = head1;
+   while (current1 != NULL)
+   {
+
+      if (current1->data < head2->data)
+      {
+         struct node *c = (struct node *)malloc(sizeof(struct node));
+         c->data = current1->data;
+         c->next = head2;
+         head2 = c;
+      }
+      else if (current1->data > tail2->data)
+      {
+         struct node *c = (struct node *)malloc(sizeof(struct node));
+         c->data = current1->data;
+         tail2->next = c;
+         tail2 = c;
+         tail2->next = NULL;
+      }
+      else
+      {
+         struct node *current2 = head2, *temp = current2->next;
+         while (temp != NULL)
+         {
+            if (current1->data >= current2->data && current1->data <= temp->data)
+            {
+               struct node *extra = (struct node *)malloc(sizeof(struct node));
+               extra->data = current1->data;
+               current2->next = extra;
+               extra->next = temp;
+               break;
+            }
+            current2 = current2->next;
+            temp = temp->next;
+         }
+      }
+
+      current1 = current1->next;
+   }
+}
+
+// 10
+// 1 2 2 3 3 3 4 5 5 6
+
+int main()
+{
+   int n;
+
+   cin >> n;
+
+   int size = 0;
+
+   struct node *head, *tail, *temp, *current;
+
+   head = (struct node *)malloc(sizeof(struct node));
+   tail = head;
+   tail->next = NULL;
+
+   int element;
+   for (int i = 0; i < n; i++)
+   {
+      cin >> element;
+
+      if (size == 0)
+         addfirst(element, head, tail, size);
+
+      else
+         addlast(element, tail, size);
+   }
+
+   //  cout << "before removing the element:" << endl;
+   cout << "1st list:" << endl;
+   print_list(head);
+
+   struct node *head1, *tail1;
+   head1 = (struct node *)malloc(sizeof(struct node));
+   tail1 = head1;
+   tail1->next = NULL;
+   int n1;
+   cout << "num of size of 2nd list:" << endl;
+   cin >> n1;
+   int size1 = 0;
+   for (int i = 0; i < n1; i++)
+   {
+      cin >> element;
+
+      if (size1 == 0)
+         addfirst(element, head1, tail1, size1);
+
+      else
+         addlast(element, tail1, size1);
+   }
+   cout << "2nd list:" << endl;
+   print_list(head1);
+
+   // remove_node(head, tail);
+   // cout << "after removing the element:" << endl;
+   // print_list(head);
+   // delete_dup(head, tail);
+   // print_list(head);
+
+   // merge the two sorted list in another list
+
+   struct node *head2, *tail2;
+   head2 = (struct node *)malloc(sizeof(struct node));
+   tail2 = head2;
+   tail2->next = NULL;
+   current = head;
+   int size3 = 0;
+   while (current != NULL)
+   {
+      element = current->data;
+      if (size3 == 0)
+         addfirst(element, head2, tail2, size3);
+
+      else
+         addlast(element, tail2, size3);
+      current = current->next;
+   }
+
+   cout << "third list:" << endl;
+   // print_list(head2);
+
+   merge_lists(head1, head2, tail2);
+   cout << "merged list:" << endl;
+   print_list(head2);
+}
+
+
+
+
+
+
+
+
+
+
+
+
