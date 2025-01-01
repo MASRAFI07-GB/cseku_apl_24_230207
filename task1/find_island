@@ -1,0 +1,73 @@
+#include<bits/stdc++.h>
+using namespace std;
+int n,m;
+// find island with bfs
+void bfs(vector<vector<int>>adj,vector<vector<int>>&vis,int i,int j){
+  queue<pair<int,int>>q;
+  q.push(make_pair(i,j));
+  while(q.size()>0){
+    pair<int,int>p=q.front();
+    q.pop();
+    for(int k=p.first-1;k<=p.first+1;k++){
+        for(int l=p.second-1;l<=p.second+1;l++){
+            if(k==p.first&&l==p.second){
+
+            }
+
+            else if(k>=0&&k<n&&l>=0&&l<m&&adj[k][l]==1&&vis[k][l]==0){
+                q.push({k,l});
+                vis[k][l]=1;
+            }
+        }
+    }
+  }
+
+  
+
+
+}
+
+// find island with dfs
+void dfs(vector<vector<int>>adj,vector<vector<int>>&vis,int i,int j){
+    for(int k=i-1;k<=i+1;k++){
+        for(int l=j-1;l<=j+1;l++){
+             if(k>=0&&k<n&&l>=0&&l<m&&adj[k][l]==1&&vis[k][l]==0){
+                vis[k][l]=1;
+                dfs(adj,vis,k,l);
+            }
+        }
+    }
+
+}
+
+
+int main()
+{
+    
+    cin>>n>>m;
+    vector<vector<int>>adj(n,vector<int>(m));
+    for(int i=0;i<n;i++){
+        for(int j=0;j<m;j++){
+            cin>>adj[i][j];
+        }
+    }
+
+   vector<vector<int>>vis(n,vector<int>(m,0));
+   
+   int cnt=0;
+   for(int i=0;i<n;i++){
+    for(int j=0;j<m;j++){
+        if(adj[i][j]==1&&vis[i][j]==0){
+            cnt++;
+            vis[i][j]=1;
+            dfs(adj,vis,i,j);
+            //bfs(adj,vis,i,j);
+        }
+    }
+   }
+
+   cout<<cnt<<endl;
+  
+
+}
+
