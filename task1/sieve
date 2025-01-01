@@ -1,0 +1,73 @@
+#include<bits/stdc++.h>
+using namespace std;
+const int N=1e3;
+vector<int>v(N,1);
+vector<int>lp(N,0),hp(N,0);
+int main()
+{
+    // pre computation 
+    v[0]=v[1]=0;
+    for(int i=2;i*i<N;i++){
+        if(v[i]==1){
+            hp[i]=i;lp[i]=i;
+            for(int j=i+i;j<N;j+=i){
+                v[j]=0;
+                hp[j]=i;
+                if(lp[j]==0){
+                    lp[j]=i;
+                }
+            }
+        }
+    }
+    // pre computation 
+
+// highest prime and lowest prime find 
+    int n;
+    cin>>n;
+    for(int i=0;i<n;i++){
+    int x;cin>>x;
+    cout<<hp[x]<<" "<<lp[x]<<endl;
+    }
+    // highest prime and lowest prime find 
+    
+
+    //find the total prime factors
+
+    int n;
+    cin>>n;
+    unordered_map<int,int>prime_factors;
+    while(n>1){
+       int pf=lp[n];
+       while(n%pf==0){
+        n/=pf;
+        //prime_factors.push_back(pf);
+        prime_factors[pf]++;
+       }
+    }
+    //find the total prime factors
+
+    // for(auto it:prime_factors){
+    //     cout<<it.first<<" "<<it.second<<endl;
+    // }
+
+    // deal with divisors
+vector<int>divisor[N];
+    for(int i=2;i<N;i++){
+        for(int j=i;j<N;j+=i){
+            divisor[j].push_back(i);
+        }
+    }
+    // deal with divisors
+
+
+// print the vector of divisors
+    for(int i=0;i<N;i++){
+        cout<<"divisors of "<<i<<":";
+                for(auto it:divisor[i]){
+            cout<<it<<" ";
+        }
+        cout<<endl;
+    }
+    // print the vector of divisors
+  
+}
