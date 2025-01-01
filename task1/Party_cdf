@@ -1,0 +1,68 @@
+#include <bits/stdc++.h>
+using namespace std;
+int bfs(vector<int> adj[],int vis[],int i){
+    
+    queue<int>q;
+    q.push(i);
+    int cnt1=1;
+    int cnt=0;
+    int ne=1;
+    vector<int>cnt_cheak;
+    while(!q.empty()){
+        int element=q.front();
+        q.pop();
+        for(auto it:adj[element]){
+             if(vis[it]==0){
+                cnt++;
+                vis[it]=1;
+                q.push(it);
+             }
+        }
+        ne--;
+        if(ne==0){
+            cnt1++;
+            ne=cnt;
+            cnt=0;
+        } 
+    }
+    return cnt1-1;
+}
+int main()
+{
+    int t;
+    cin >> t;
+    vector<int> adj[t + 1];
+    int arr[t+1]={0};
+    
+    for (int i = 1; i <= t; i++)
+    {
+        int x;
+        cin >> x;
+        if (x != -1)
+            adj[x].push_back(i);
+            else {
+                arr[i]=x;
+            }
+    }
+
+    // for (int i = 0; i <= t; i++)
+    // {
+    //     for (auto it : adj[i])
+    //         cout << it << " ";
+    //     cout << endl;
+    // }
+    
+    vector<int>max;
+    int vis[t+1]={0};
+    for(int i=1;i<=t;i++){
+        if(arr[i]==-1){
+            vis[i]=1;
+             max.push_back(bfs(adj,vis,i));
+        }
+    }
+
+    sort(max.rbegin(),max.rend());
+    cout<<max[0];
+
+
+}
